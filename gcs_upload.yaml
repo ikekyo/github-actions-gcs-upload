@@ -1,0 +1,29 @@
+name: Coverage
+on:
+  schedule:
+    - cron: '0 7,12,15,18 * * *'
+
+jobs:
+  build:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+    - name: Run install
+      run: yarn install
+    - name: Run jest test
+      run: yarn test:badges
+    - name: Copy coverage badge to Google bucket
+      uses: actions-hub/gcloud@master
+      env:
+        PROJECT_ID: ${{ secrets.DEV_GOOGLE_PROJECT_ID }}
+        APPLICATION_CREDENTIALS: ${{ secrets.DEV_GOOGLE_APPLICATION_CREDENTIALS }}
+        CLI: gsutil
+      with:
+        args: cp coverage/*.svg gs://sspp-io-dev.appspot.com/images/public/
