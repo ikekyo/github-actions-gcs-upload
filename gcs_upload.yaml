@@ -1,7 +1,8 @@
 name: Coverage
 on:
-  schedule:
-    - cron: '0 7,12,15,18 * * *'
+  push:
+    branches:
+      - master
 
 jobs:
   build:
